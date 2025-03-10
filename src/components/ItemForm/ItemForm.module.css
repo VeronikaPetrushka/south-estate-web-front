@@ -137,6 +137,21 @@
     color: #420101;
 }
 
+.inputGroup {
+    display: flex;
+    align-items: center;
+  }
+  
+.select {
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid #7f7f7f;
+    font-size: 16px;
+    color: #420101;
+    background: inherit;
+    margin-left: 20px;
+}  
+
 .description {
     width: 94%;
     padding: 8px 16px;
@@ -188,4 +203,8 @@
 
 .createBtn:hover, .createBtn:focus {
     background-color: #672121;
+}
+
+.flatProperties {
+    width: 100%;
 }

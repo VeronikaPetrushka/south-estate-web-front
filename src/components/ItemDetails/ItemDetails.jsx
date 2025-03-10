@@ -80,7 +80,7 @@ const ItemDetails = () => {
       )}
       <h2>{item.name}</h2>
       <p><strong>Price:</strong> {item.price}</p>
-      <p><strong>Location:</strong> {item.location}</p>
+      <p><strong>Location:</strong> {item.address}</p>
       {item.size && <p><strong>Size:</strong> {item.size} sq.m.</p>}
       {item.description && <p><strong>Description:</strong> {item.description}</p>}
       <p><strong>Category:</strong> {item.category}</p>

@@ -14,11 +14,17 @@ const ItemForm = ({ isOpen, onClose }) => {
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [currency, setCurrency] = useState('');
   const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
+  const [city, setCity] = useState('');
+  const [district, setDistrict] = useState('');
+  const [address, setAddress] = useState('');
   const [size, setSize] = useState('');
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [height, setHeight] = useState('');
+  const [floor, setFloor] = useState('');
+  const [rooms, setRooms] = useState('');
   const [images, setImages] = useState([]);
 
   const handleImageUpload = (e) => {
@@ -33,10 +39,16 @@ const ItemForm = ({ isOpen, onClose }) => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
+    formData.append('currency', currency);
     formData.append('description', description || '');
     formData.append('category', category);
     formData.append('subCategory', subCategory || '');
-    formData.append('location', location);
+    formData.append('city', city);
+    formData.append('district', district);
+    formData.append('location', address);
+    formData.append('height', height);
+    formData.append('floor', floor);
+    formData.append('rooms', rooms);
     formData.append('size', size || '');
   
     images.forEach((image) => {
@@ -72,11 +84,17 @@ const ItemForm = ({ isOpen, onClose }) => {
   
     setName('');
     setPrice('');
+    setCurrency('');
     setDescription('');
-    setLocation('');
+    setCity('');
+    setDistrict('');
+    setAddress('');
     setSize('');
     setCategory('');
     setSubCategory('');
+    setHeight('');
+    setFloor('');
+    setRooms('');
     setImages([]);
   };
   
@@ -184,15 +202,26 @@ const ItemForm = ({ isOpen, onClose }) => {
 
         <div className={css.itemBox}>
           <label className={css.label} htmlFor="price">Ціна</label>
-          <input
-            type="text"
-            id="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-            className={css.input}
-            placeholder='300 $'
-          />
+          <div className={css.inputGroup}>
+            <input
+              type="text"
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+              className={css.input}
+              placeholder="300"
+            />
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className={css.select}
+            >
+              <option value="USD">$</option>
+              <option value="EUR">€</option>
+              <option value="UAH">₴</option>
+            </select>
+          </div>
         </div>
 
         <div className={css.itemBox}>
@@ -208,12 +237,38 @@ const ItemForm = ({ isOpen, onClose }) => {
         </div>
 
         <div className={css.itemBox}>
-          <label className={css.label} htmlFor="location">Місце знаходження</label>
+          <label className={css.label} htmlFor="location">Місто</label>
           <input
             type="text"
             id="location"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => setCity(e.target.value)}
+            required
+            className={css.input}
+            placeholder='Space street, 1/7m'
+          />
+        </div>
+
+        <div className={css.itemBox}>
+          <label className={css.label} htmlFor="location">Район</label>
+          <input
+            type="text"
+            id="location"
+            value={location}
+            onChange={(e) => setDistrict(e.target.value)}
+            required
+            className={css.input}
+            placeholder='Space street, 1/7m'
+          />
+        </div>
+
+        <div className={css.itemBox}>
+          <label className={css.label} htmlFor="location">Адреса</label>
+          <input
+            type="text"
+            id="location"
+            value={location}
+            onChange={(e) => setAddress(e.target.value)}
             required
             className={css.input}
             placeholder='Space street, 1/7m'
@@ -266,6 +321,47 @@ const ItemForm = ({ isOpen, onClose }) => {
             <div className={css.buttonGroup}>
               {getSubCategories()}
             </div>
+          </div>
+        )}
+
+        {subCategory === 'Квартири' && (
+          <div className={css.flatProperties}>
+              <div className={css.itemBox}>
+                <label className={css.label} htmlFor="height">Кількість поверхів</label>
+                <input
+                  type="text"
+                  id="size"
+                  value={size}
+                  onChange={(e) => setHeight(e.target.value)}
+                  required
+                  className={css.input}
+                  placeholder='12'
+                />
+              </div>
+              <div className={css.itemBox}>
+                <label className={css.label} htmlFor="floor">Поверх</label>
+                <input
+                  type="text"
+                  id="size"
+                  value={size}
+                  onChange={(e) => setFloor(e.target.value)}
+                  required
+                  className={css.input}
+                  placeholder='3'
+                />
+              </div>
+              <div className={css.itemBox}>
+                <label className={css.label} htmlFor="rooms">Кількість кімнат</label>
+                <input
+                  type="text"
+                  id="size"
+                  value={size}
+                  onChange={(e) => setRooms(e.target.value)}
+                  required
+                  className={css.input}
+                  placeholder='2'
+                />
+              </div>
           </div>
         )}
 
