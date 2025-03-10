@@ -237,37 +237,37 @@ const ItemForm = ({ isOpen, onClose }) => {
         </div>
 
         <div className={css.itemBox}>
-          <label className={css.label} htmlFor="location">Місто</label>
+          <label className={css.label} htmlFor="city">Місто</label>
           <input
             type="text"
-            id="location"
-            value={location}
+            id="city"
+            value={city}
             onChange={(e) => setCity(e.target.value)}
             required
             className={css.input}
-            placeholder='Space street, 1/7m'
+            placeholder='City'
           />
         </div>
 
         <div className={css.itemBox}>
-          <label className={css.label} htmlFor="location">Район</label>
+          <label className={css.label} htmlFor="district">Район</label>
           <input
             type="text"
-            id="location"
-            value={location}
+            id="district"
+            value={district}
             onChange={(e) => setDistrict(e.target.value)}
             required
             className={css.input}
-            placeholder='Space street, 1/7m'
+            placeholder='District'
           />
         </div>
 
         <div className={css.itemBox}>
-          <label className={css.label} htmlFor="location">Адреса</label>
+          <label className={css.label} htmlFor="address">Адреса</label>
           <input
             type="text"
-            id="location"
-            value={location}
+            id="address"
+            value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
             className={css.input}
@@ -330,8 +330,8 @@ const ItemForm = ({ isOpen, onClose }) => {
                 <label className={css.label} htmlFor="height">Кількість поверхів</label>
                 <input
                   type="text"
-                  id="size"
-                  value={size}
+                  id="height"
+                  value={height}
                   onChange={(e) => setHeight(e.target.value)}
                   required
                   className={css.input}
@@ -342,8 +342,8 @@ const ItemForm = ({ isOpen, onClose }) => {
                 <label className={css.label} htmlFor="floor">Поверх</label>
                 <input
                   type="text"
-                  id="size"
-                  value={size}
+                  id="floor"
+                  value={floor}
                   onChange={(e) => setFloor(e.target.value)}
                   required
                   className={css.input}
@@ -354,8 +354,8 @@ const ItemForm = ({ isOpen, onClose }) => {
                 <label className={css.label} htmlFor="rooms">Кількість кімнат</label>
                 <input
                   type="text"
-                  id="size"
-                  value={size}
+                  id="rooms"
+                  value={rooms}
                   onChange={(e) => setRooms(e.target.value)}
                   required
                   className={css.input}
