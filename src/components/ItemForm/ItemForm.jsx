@@ -499,6 +499,13 @@ const ItemForm = ({ isOpen, onClose }) => {
   );
 };
 
+SortableImage.propTypes = {
+  image: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    file: PropTypes.instanceOf(File).isRequired,
+  }).isRequired,
+};
+
 ItemForm.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
