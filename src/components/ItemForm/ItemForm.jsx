@@ -5,9 +5,35 @@ import Modal from 'react-modal';
 import { createItem } from '../../redux/items/operations.js';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove } from '@dnd-kit/sortable';
 import css from './ItemForm.module.css'
 
 Modal.setAppElement('#root');
+
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const SortableImage = ({ image }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: image.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <img
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      src={URL.createObjectURL(image.file)}
+      className={css.uploadedImage}
+      style={style}
+    />
+  );
+};
 
 const ItemForm = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
@@ -22,6 +48,7 @@ const ItemForm = ({ isOpen, onClose }) => {
   const [size, setSize] = useState('');
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [plotCategory, setPlotCategory] = useState('');
   const [height, setHeight] = useState('');
   const [floor, setFloor] = useState('');
   const [rooms, setRooms] = useState('');
@@ -29,9 +56,21 @@ const ItemForm = ({ isOpen, onClose }) => {
 
   const handleImageUpload = (e) => {
     const selectedFiles = e.target.files;
-    const fileArray = Array.from(selectedFiles);
-    setImages(prevImages => [...prevImages, ...fileArray]);
+    const fileArray = Array.from(selectedFiles).map((file, index) => ({ id: Date.now() + index, file }));
+    setImages((prevImages) => [...prevImages, ...fileArray]);
   };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+  
+    if (!over || active.id === over.id) return;
+  
+    setImages((items) => {
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over.id);
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  };  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,6 +82,7 @@ const ItemForm = ({ isOpen, onClose }) => {
     formData.append('description', description || '');
     formData.append('category', category);
     formData.append('subCategory', subCategory || '');
+    formData.append('plotCategory', plotCategory || '');
     formData.append('city', city);
     formData.append('district', district);
     formData.append('location', address);
@@ -92,6 +132,7 @@ const ItemForm = ({ isOpen, onClose }) => {
     setSize('');
     setCategory('');
     setSubCategory('');
+    setPlotCategory('');
     setHeight('');
     setFloor('');
     setRooms('');
@@ -105,6 +146,10 @@ const ItemForm = ({ isOpen, onClose }) => {
 
   const handleSubCategoryChange = (selectedSubCategory) => {
     setSubCategory(selectedSubCategory);
+  };
+
+  const handlePlotCategoryChange = (selectedPlotCategory) => {
+    setPlotCategory(selectedPlotCategory);
   };
 
   const getSubCategories = () => {
@@ -124,6 +169,13 @@ const ItemForm = ({ isOpen, onClose }) => {
             onClick={() => handleSubCategoryChange('Квартири')}
           >
             Квартири
+          </button>
+          <button
+            type="button"
+            className={`${css.option} ${subCategory === 'Земельна ділянка' ? css.selected : ''}`}
+            onClick={() => handleSubCategoryChange('Земельна ділянка')}
+          >
+            Земельна ділянка
           </button>
         </>
       );
@@ -165,15 +217,19 @@ const ItemForm = ({ isOpen, onClose }) => {
       <form onSubmit={handleSubmit} className={css.inner}>
 
       <div className={css.imageUploadContainer}>
-        <div className={css.imagePlaceholder}>
-          {images.length === 0 ? (
-            <span className={css.placeholderText}>Поки немає завантажених фото</span>
-          ) : (
-            images.map((img, index) => (
-              <img key={index} src={URL.createObjectURL(img)} alt="Uploaded preview" className={css.uploadedImage} />
-            ))
-          )}
-        </div>
+        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={images} strategy={verticalListSortingStrategy}>
+            <div className={css.imagePlaceholder}>
+              {images.length === 0 ? (
+                <span className={css.placeholderText}>Поки немає завантажених фото</span>
+              ) : (
+                <div className={css.imageScrollContainer}>
+                  {images.map((img) => <SortableImage key={img.id} image={img} />)}
+                </div>
+              )}
+            </div>
+          </SortableContext>
+        </DndContext>
         <label htmlFor="images">Виберіть фото:</label>
         <input 
           type="file" 
@@ -182,9 +238,7 @@ const ItemForm = ({ isOpen, onClose }) => {
           multiple 
           onChange={handleImageUpload} 
           className={css.uploadButton} 
-          // required
         />
-        <input type="submit" value="submit" />
       </div>
       
         <div className={css.itemBox}>
@@ -364,6 +418,79 @@ const ItemForm = ({ isOpen, onClose }) => {
               </div>
           </div>
         )}
+
+        {
+          subCategory === 'Земельна ділянка' && (
+            <div className={css.itemBox}>
+            <label className={css.label} htmlFor="plotCategory">Призначення</label>
+            <div className={css.buttonGroup}>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Cільськогосподарське призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Cільськогосподарське призначення')}
+              >
+                Cільськогосподарське призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Житлова та громадська забудова' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Житлова та громадська забудова')}
+              >
+                Житлова та громадська забудова
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Водний фонд' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Водний фонд')}
+              >
+                Водний фонд
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Природно-заповіднє та інше природоохоронне призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Природно-заповіднє та інше природоохоронне призначення')}
+              >
+                Природно-заповіднє та інше природоохоронне призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Оздоровче призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Оздоровче призначення')}
+              >
+                Оздоровче призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Рекреаційне призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Рекреаційне призначення')}
+              >
+                Рекреаційне призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Історико-культурне призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Історико-культурне призначення')}
+              >
+                Історико-культурне призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Лісогосподарське призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Лісогосподарське призначення')}
+              >
+                Лісогосподарське призначення
+              </button>
+              <button
+                type="button"
+                className={`${css.option} ${plotCategory === 'Промисловость, транспорт, звʼязок, енергетика, оборона та інше призначення' ? css.selected : ''}`}
+                onClick={() => handlePlotCategoryChange('Промисловость, транспорт, звʼязок, енергетика, оборона та інше призначення')}
+              >
+                Промисловость, транспорт, звʼязок, енергетика, оборона та інше призначення
+              </button>
+            </div>
+          </div>
+          )
+        }
 
         <button className={css.createBtn} type="submit">Створити</button>
 

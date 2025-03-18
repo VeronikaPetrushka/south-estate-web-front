@@ -76,14 +76,23 @@
     position: relative;
 }
 
+.imageScrollContainer {
+    width: 570px;
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+    gap: 10px;
+}
+
 .placeholderText {
     color: #aaa;
     font-size: 16px;
 }
 
 .uploadedImage {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 120px;
     object-fit: cover;
     margin-right: 10px;
     border-radius: 5px;
